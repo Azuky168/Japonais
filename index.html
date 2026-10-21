@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-512.png">
 <meta name="theme-color" content="#c8344a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -301,16 +304,6 @@ render();next();
 /* --- Mode appli : icône, manifeste, installation, hors ligne --- */
 $("ans").addEventListener("focus",()=>$("nav").classList.add("hide"));
 $("ans").addEventListener("blur",()=>$("nav").classList.remove("hide"));
-try{
-  const c=document.createElement("canvas");c.width=c.height=512;const x=c.getContext("2d");
-  x.fillStyle="#c8344a";x.fillRect(0,0,512,512);x.fillStyle="#fff";
-  x.font='300px "Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif';x.textAlign="center";x.textBaseline="middle";x.fillText("あ",256,276);
-  const u=c.toDataURL("image/png");
-  const l1=document.createElement("link");l1.rel="apple-touch-icon";l1.href=u;document.head.append(l1);
-  const l2=document.createElement("link");l2.rel="icon";l2.href=u;document.head.append(l2);
-  const m={name:"Hiragana",short_name:"Hiragana",start_url:location.href.split("#")[0],display:"standalone",background_color:"#fbf8f6",theme_color:"#c8344a",lang:"fr",icons:[{src:u,sizes:"512x512",type:"image/png",purpose:"any"}]};
-  const l3=document.createElement("link");l3.rel="manifest";l3.href=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:"application/manifest+json"}));document.head.append(l3);
-}catch(e){}
 let dp=null;
 addEventListener("beforeinstallprompt",e=>{e.preventDefault();dp=e;$("inst").hidden=false});
 addEventListener("appinstalled",()=>{$("inst").hidden=true});
