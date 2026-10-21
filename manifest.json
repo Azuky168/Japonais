@@ -1,6 +1,6 @@
 {
- "name": "Hiragana",
- "short_name": "Hiragana",
+ "name": "SakuraKana",
+ "short_name": "SakuraKana",
  "start_url": "./index.html",
  "scope": "./",
  "display": "standalone",
