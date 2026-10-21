@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#c8344a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Hiragana">
+<title>Hiragana · Apprendre pas à pas</title>
+<style>
+:root{
+  --bg:#fbf8f6; --card:#ffffff; --ink:#2b2528; --muted:#8a8186; --line:#eadfe2;
+  --sakura:#f4c9d3; --sakura-soft:#fcecf0; --red:#c8344a; --green:#5f9e7a; --amber:#e0a243;
+  --radius:14px;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#1c1819;--card:#262123;--ink:#f3eceb;--muted:#a79ca0;--line:#3a3235;--sakura:#5a3540;--sakura-soft:#2f2226;--red:#e5607a}
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+header{text-align:center;padding:2rem 1rem 1rem}
+header h1{font-size:clamp(1.6rem,5vw,2.4rem);font-weight:600;letter-spacing:.02em}
+header h1 span{color:var(--red)}
+header p{color:var(--muted);margin-top:.3rem}
+nav{position:sticky;top:0;z-index:5;display:flex;justify-content:center;gap:.4rem;flex-wrap:wrap;padding:.7rem;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav button{font:inherit;border:1px solid transparent;background:none;color:var(--muted);padding:.45rem 1rem;border-radius:99px;cursor:pointer}
+nav button:hover{background:var(--sakura-soft)}
+nav button.active{background:var(--sakura);color:var(--ink);font-weight:600}
+main{max-width:820px;margin:0 auto;padding:1.5rem 1rem 4rem}
+section{display:none}
+section.active{display:block}
+h2{font-size:1.4rem;margin-bottom:.4rem}
+.sub{color:var(--muted);margin-bottom:1.2rem}
+.legend{display:flex;gap:1rem;flex-wrap:wrap;font-size:.85rem;color:var(--muted);margin-bottom:1rem}
+.dot{display:inline-block;width:.7rem;height:.7rem;border-radius:50%;margin-right:.35rem;vertical-align:middle;background:var(--line)}
+.dot.learning{background:var(--amber)} .dot.mastered{background:var(--green)}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.55rem}
+.cell{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:.6rem .2rem .5rem;text-align:center;cursor:pointer;font:inherit;color:inherit;transition:transform .12s,border-color .12s}
+.cell:hover{transform:translateY(-2px);border-color:var(--sakura)}
+.cell:focus-visible,.btn:focus-visible,nav button:focus-visible,input:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.cell .k{display:block;font-size:clamp(1.6rem,6vw,2.4rem);line-height:1.2}
+.cell .r{display:block;font-size:.8rem;color:var(--muted)}
+.cell .dot{position:absolute;top:.45rem;right:.45rem;margin:0}
+.empty{visibility:hidden}
+.hint{font-size:.8rem;color:var(--muted);margin-top:1rem}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:1.5rem;text-align:center}
+.score{display:flex;justify-content:center;gap:1.5rem;color:var(--muted);margin-bottom:1rem;flex-wrap:wrap}
+.score b{color:var(--ink);font-size:1.2rem}
+.big{font-size:clamp(4.5rem,22vw,7.5rem);line-height:1.1;margin:.3rem 0}
+.quiz-form{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap}
+input{font:inherit;font-size:1.1rem;padding:.6rem 1rem;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);width:9rem;text-align:center}
+.btn{font:inherit;padding:.6rem 1.3rem;border:none;border-radius:10px;background:var(--red);color:#fff;cursor:pointer;font-weight:600}
+.btn.ghost{background:none;color:var(--red);border:1px solid var(--red)}
+.fb{min-height:2.6rem;margin-top:1rem;font-weight:600}
+.fb.ok{color:var(--green)} .fb.ko{color:var(--red)}
+.shake{animation:sh .3s}
+@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@media (prefers-reduced-motion:reduce){.shake{animation:none}.cell{transition:none}}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin:1.2rem 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:1rem .5rem}
+.stat b{display:block;font-size:1.8rem}
+.stat span{font-size:.85rem;color:var(--muted)}
+.bar{height:14px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:.8rem;display:flex}
+.bar i{display:block;height:100%;transition:width .4s}
+.pct{font-size:3.2rem;font-weight:600;color:var(--red)}
+.tips{list-style:none;padding:0;display:grid;gap:.7rem}
+.tips li{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--sakura);border-radius:10px;padding:.9rem 1rem}
+.tips b{display:block}
+.chips{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
+.chip{font:inherit;text-align:left;background:var(--card);color:var(--ink);border:2px solid var(--line);border-left:6px solid var(--pc);border-radius:12px;padding:.5rem .8rem;cursor:pointer;flex:1 1 9rem}
+.chip small{display:block;color:var(--muted);font-size:.75rem}
+.chip.active{border-color:var(--pc);background:color-mix(in srgb,var(--pc) 10%,var(--card))}
+.pinfo{border-left:6px solid var(--pc);background:var(--card);border-radius:12px;padding:.8rem 1rem;margin-bottom:1rem}
+.pinfo h3{font-size:1.05rem}.pinfo .d{color:var(--pc);font-weight:600;font-size:.9rem}
+.pinfo .bar,.prow .bar{margin-top:.5rem;height:10px}
+.gt{font-size:.95rem;color:var(--muted);margin:1.2rem 0 .5rem}
+.grid.c3{grid-template-columns:repeat(3,1fr);max-width:480px}
+.cell.small .k{font-size:clamp(1.3rem,5vw,1.9rem)}
+.rare{position:absolute;top:.3rem;left:.45rem;font-size:.7rem;color:var(--muted)}
+.scope{display:block;margin-bottom:.8rem;color:var(--muted)}
+select{font:inherit;padding:.4rem .6rem;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.prow{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--pc);border-radius:12px;padding:.7rem 1rem;margin-bottom:.6rem}
+.prow div:first-child{display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap}
+.prow small{color:var(--muted)}
+
+/* --- Mode appli --- */
+[hidden]{display:none!important}
+html,body{overscroll-behavior:none}
+body{-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;padding-bottom:calc(4.6rem + env(safe-area-inset-bottom))}
+input{-webkit-user-select:text;user-select:text}
+header{position:sticky;top:0;z-index:6;display:flex;justify-content:space-between;align-items:center;text-align:left;padding:calc(env(safe-area-inset-top) + .6rem) 1rem .6rem;background:var(--bg);border-bottom:1px solid var(--line)}
+header h1{font-size:1.25rem}
+header h1 span{font-size:.9rem;color:var(--muted);font-weight:400;margin-left:.3rem}
+header .btn{padding:.35rem .9rem;font-size:.9rem}
+nav{position:fixed;top:auto;bottom:0;left:0;right:0;flex-wrap:nowrap;gap:0;padding:.3rem .3rem calc(.3rem + env(safe-area-inset-bottom));border-top:1px solid var(--line);border-bottom:0;background:var(--bg)}
+nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:.1rem;border-radius:12px;padding:.35rem .2rem;font-size:.72rem;max-width:10rem}
+nav button i{font-style:normal;font-size:1.3rem;line-height:1.2}
+nav.hide{display:none}
+section.active{animation:fi .2s}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){section.active{animation:none}}
+.cell:active,.btn:active,.chip:active{transform:scale(.96)}
+</style>
+</head>
+<body>
+<header><h1>ひらがな <span>Hiragana</span></h1><button class="btn ghost" id="inst" hidden>Installer</button></header>
+<nav id="nav">
+  <button data-s="table" class="active"><i>🌸</i><span>Tableau</span></button>
+  <button data-s="quiz"><i>✏️</i><span>Quiz</span></button>
+  <button data-s="stats"><i>📊</i><span>Progrès</span></button>
+  <button data-s="tips"><i>💡</i><span>Conseils</span></button>
+</nav>
+<main>
+  <section id="table" class="active">
+    <h2>Tableau des hiragana</h2>
+    <p class="sub">Choisissez une partie. Touchez un caractère pour le marquer comme maîtrisé (ou le remettre en apprentissage).</p>
+    <div class="chips" id="chips"></div>
+    <div class="pinfo" id="pinfo"></div>
+    <div class="legend">
+      <span><i class="dot"></i>Non vu</span><span><i class="dot learning"></i>En cours</span><span><i class="dot mastered"></i>Maîtrisé</span><span>✱ Très peu utilisé</span>
+    </div>
+    <div id="groups"></div>
+    <p class="hint">Un caractère devient « maîtrisé » après 3 bonnes réponses d'affilée au quiz.</p>
+  </section>
+
+  <section id="quiz">
+    <h2>Quiz</h2>
+    <p class="sub">Tapez le romaji du caractère affiché.</p>
+    <label class="scope">Révision : <select id="scope"></select></label>
+    <div class="panel">
+      <div class="score">
+        <span>Score <b id="sc">0</b></span><span>Questions <b id="qn">0</b></span><span>Série <b id="st">0</b></span>
+      </div>
+      <div class="big" id="kana">あ</div>
+      <form class="quiz-form" id="qf" autocomplete="off">
+        <input id="ans" aria-label="Romaji" placeholder="romaji" autocapitalize="off" spellcheck="false">
+        <button class="btn" id="go" type="submit">Valider</button>
+      </form>
+      <div class="fb" id="fb" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section id="stats">
+    <h2>Ma progression</h2>
+    <div class="panel">
+      <div class="pct" id="pct">0 %</div>
+      <div>de maîtrise globale</div>
+      <div class="bar"><i id="b1" style="background:var(--green)"></i><i id="b2" style="background:var(--amber)"></i></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><b id="n-m" style="color:var(--green)">0</b><span>Maîtrisés</span></div>
+      <div class="stat"><b id="n-l" style="color:var(--amber)">0</b><span>En cours</span></div>
+      <div class="stat"><b id="n-u">0</b><span>Non vus</span></div>
+    </div>
+    <h2 style="margin-top:1.5rem">Par partie</h2>
+    <div id="plist"></div>
+    <button class="btn ghost" id="reset" style="margin-top:1.5rem">Réinitialiser ma progression</button>
+  </section>
+
+  <section id="tips">
+    <h2>Conseils de révision</h2>
+    <p class="sub">Quelques habitudes qui font vraiment la différence.</p>
+    <ul class="tips">
+      <li><b>Commencez petit</b>Apprenez une ligne (a-i-u-e-o, puis ka-ki-ku-ke-ko…) avant de passer à la suivante.</li>
+      <li><b>Révisez un peu, tous les jours</b>10 minutes quotidiennes valent mieux qu'une heure le week-end.</li>
+      <li><b>Associez une image</b>Inventez une histoire : さ ressemble à un sabre, め à un œil (« me »).</li>
+      <li><b>Écrivez à la main</b>Respectez l'ordre et le sens des traits : la mémoire musculaire aide beaucoup.</li>
+      <li><b>Mélangez les caractères</b>Le quiz tire plus souvent ceux que vous ne maîtrisez pas encore. Ne révisez pas toujours dans l'ordre.</li>
+      <li><b>Lisez de vrais mots</b>Dès que possible, déchiffrez des mots simples (さくら, ありがとう) pour donner du sens aux kana.</li>
+      <li><b>Installer l'appli</b>Sur iPhone : Safari, bouton Partager, puis « Sur l'écran d'accueil ». Sur Android ou ordinateur : bouton « Installer » en haut, ou menu du navigateur.</li>
+    </ul>
+  </section>
+</main>
+
+<script>
+const g=(n,c,t)=>({n,c,cells:t.split(" ").map(x=>x==="_"?null:{k:x.split(":")[0],r:x.split(":")[1]})});
+const PARTS=[
+ {t:"Partie 1",s:"A · K · S · G · Z",d:"2026-10-26",c:"#b02a6b",gr:[
+  g("A, K, S",5,"あ:a い:i う:u え:e お:o か:ka き:ki く:ku け:ke こ:ko さ:sa し:shi す:su せ:se そ:so"),
+  g("G, Z (dakuten)",5,"が:ga ぎ:gi ぐ:gu げ:ge ご:go ざ:za じ:ji ず:zu ぜ:ze ぞ:zo")]},
+ {t:"Partie 2",s:"T · N · H · D · B · P",d:"2026-11-19",c:"#e07b2a",gr:[
+  g("T, N, H",5,"た:ta ち:chi つ:tsu て:te と:to な:na に:ni ぬ:nu ね:ne の:no は:ha ひ:hi ふ:fu へ:he ほ:ho"),
+  g("D, B, P (dakuten et handakuten)",5,"だ:da ぢ:ji づ:zu で:de ど:do ば:ba び:bi ぶ:bu べ:be ぼ:bo ぱ:pa ぴ:pi ぷ:pu ぺ:pe ぽ:po")]},
+ {t:"Partie 3",s:"M · Y · R",d:null,c:"#6b4aa0",gr:[
+  g("M, Y, R",5,"ま:ma み:mi む:mu め:me も:mo や:ya _ ゆ:yu _ よ:yo ら:ra り:ri る:ru れ:re ろ:ro")]},
+ {t:"Partie 4",s:"W · N · combinaisons",d:null,c:"#2f5fb0",gr:[
+  g("W et N",5,"わ:wa _ _ _ を:wo ん:n _ _ _ _"),
+  g("Combinaisons K, S, T, N, H, M, R",3,"きゃ:kya きゅ:kyu きょ:kyo しゃ:sha しゅ:shu しょ:sho ちゃ:cha ちゅ:chu ちょ:cho にゃ:nya にゅ:nyu にょ:nyo ひゃ:hya ひゅ:hyu ひょ:hyo みゃ:mya みゅ:myu みょ:myo りゃ:rya りゅ:ryu りょ:ryo"),
+  g("Combinaisons G, Z, D, B, P",3,"ぎゃ:gya ぎゅ:gyu ぎょ:gyo じゃ:ja じゅ:ju じょ:jo ぢゃ:ja ぢゅ:ju ぢょ:jo びゃ:bya びゅ:byu びょ:byo ぴゃ:pya ぴゅ:pyu ぴょ:pyo")]}
+];
+const RARE=["ぢ","づ","ぢゃ","ぢゅ","ぢょ"];
+const ALT={si:"shi",ti:"chi",tu:"tsu",hu:"fu",zi:"ji",di:"ji",du:"zu",dzu:"zu",nn:"n"};
+[["sy","sh"],["ty","ch"],["zy","j"],["jy","j"],["dy","j"]].forEach(([a,b])=>"aiueo".split("").forEach(v=>{ALT[a+v]=b+v}));
+const KEY="hiragana-progress-v1",GOAL=3;
+const CH=[];PARTS.forEach((P,i)=>P.gr.forEach(G=>G.cells.forEach(c=>c&&CH.push({...c,p:i}))));
+
+let prog={};
+try{prog=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(prog))}catch(e){}};
+const get=k=>prog[k]||{ok:0,ko:0,streak:0,m:false};
+const status=k=>{const p=prog[k];if(!p)return"";return(p.streak>=GOAL||p.m)?"mastered":"learning"};
+const $=id=>document.getElementById(id);
+const count=list=>({m:list.filter(c=>status(c.k)==="mastered").length,l:list.filter(c=>status(c.k)==="learning").length,n:list.length});
+function when(d){
+  if(!d)return"Pas de date fixée";
+  const t=new Date();t.setHours(0,0,0,0);const D=new Date(d+"T00:00");
+  const n=Math.round((D-t)/864e5),l=D.toLocaleDateString("fr-FR",{day:"numeric",month:"long"});
+  return"À apprendre pour le "+l+" · "+(n>1?"dans "+n+" jours":n===1?"demain":n===0?"aujourd'hui":"date dépassée");
+}
+const bar=c=>`<div class="bar"><i style="width:${c.m/c.n*100}%;background:var(--green)"></i><i style="width:${c.l/c.n*100}%;background:var(--amber)"></i></div>`;
+
+/* Navigation */
+document.querySelectorAll("#nav button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("#nav button").forEach(x=>x.classList.toggle("active",x===b));
+  document.querySelectorAll("section").forEach(s=>s.classList.toggle("active",s.id===b.dataset.s));
+  if(b.dataset.s==="quiz")$("ans").focus();
+  render();
+});
+
+/* Tableau */
+let curPart=0;
+// première partie dont l'échéance n'est pas dépassée
+(()=>{const t=new Date();t.setHours(0,0,0,0);const i=PARTS.findIndex(P=>P.d&&new Date(P.d+"T00:00")>=t);if(i>=0)curPart=i})();
+function renderGrid(){
+  $("chips").innerHTML=PARTS.map((P,i)=>`<button class="chip${i===curPart?" active":""}" data-i="${i}" style="--pc:${P.c}"><b>${P.t}</b><small>${P.s}</small></button>`).join("");
+  const P=PARTS[curPart],c=count(CH.filter(x=>x.p===curPart));
+  $("pinfo").style.setProperty("--pc",P.c);
+  $("pinfo").innerHTML=`<h3>${P.t} · ${P.s}</h3><div class="d">${when(P.d)}</div><small>${c.m} maîtrisés · ${c.l} en cours · ${c.n-c.m-c.l} non vus</small>${bar(c)}`;
+  $("groups").innerHTML=P.gr.map(G=>`<div class="gt">${G.n}</div><div class="grid${G.c===3?" c3":""}">`+G.cells.map(c=>{
+    if(!c)return'<div class="cell empty"></div>';
+    const st=status(c.k),lb={"":"non vu",learning:"en cours",mastered:"maîtrisé"}[st],rare=RARE.includes(c.k);
+    return`<button class="cell${c.k.length>1?" small":""}" data-k="${c.k}" aria-label="${c.k} ${c.r}, ${lb}"><i class="dot ${st}"></i>${rare?'<span class="rare" title="Très peu utilisé">✱</span>':""}<span class="k">${c.k}</span><span class="r">${c.r}</span></button>`;
+  }).join("")+"</div>").join("");
+}
+$("chips").onclick=e=>{const b=e.target.closest(".chip");if(b){curPart=+b.dataset.i;renderGrid()}};
+$("groups").onclick=e=>{
+  const c=e.target.closest(".cell");if(!c||!c.dataset.k)return;
+  const k=c.dataset.k,p=prog[k]=get(k);
+  if(status(k)==="mastered"){p.m=false;p.streak=0}else{p.m=true;p.streak=GOAL}
+  save();render();
+};
+
+/* Stats */
+function renderStats(){
+  const c=count(CH);
+  $("pct").textContent=Math.round(c.m/c.n*100)+" %";
+  $("n-m").textContent=c.m;$("n-l").textContent=c.l;$("n-u").textContent=c.n-c.m-c.l;
+  $("b1").style.width=c.m/c.n*100+"%";$("b2").style.width=c.l/c.n*100+"%";
+  $("plist").innerHTML=PARTS.map((P,i)=>{const x=count(CH.filter(h=>h.p===i));
+    return`<div class="prow" style="--pc:${P.c}"><div><b>${P.t} · ${P.s}</b><b>${Math.round(x.m/x.n*100)} %</b></div><small>${when(P.d)} · ${x.m}/${x.n} maîtrisés</small>${bar(x)}</div>`}).join("");
+}
+$("reset").onclick=()=>{
+  if(confirm("Effacer toute votre progression ? Cette action est définitive.")){prog={};save();session={sc:0,q:0,st:0};cur=null;next();render()}
+};
+function render(){renderGrid();renderStats()}
+
+/* Quiz */
+$("scope").innerHTML=PARTS.map((P,i)=>`<option value="${i}">${P.t} (${P.s})</option>`).join("")+'<option value="all">Toutes les parties</option>';
+$("scope").onchange=()=>{cur=null;next()};
+let session={sc:0,q:0,st:0},cur=null,answered=false;
+function pool(){const v=$("scope").value;return v==="all"?CH:CH.filter(c=>c.p===+v)}
+function pick(){
+  const L=pool(),w=L.map(c=>{const s=status(c.k);return s==="mastered"?1:s==="learning"?4:3});
+  let r=Math.random()*w.reduce((a,b)=>a+b,0),i=0;
+  while(i<L.length-1&&(r-=w[i])>0)i++;
+  return L[i]===cur&&L.length>1?pick():L[i];
+}
+function next(){
+  cur=pick();answered=false;
+  $("kana").textContent=cur.k;$("ans").value="";$("ans").disabled=false;
+  $("fb").textContent="";$("fb").className="fb";$("go").textContent="Valider";$("ans").focus();
+  $("sc").textContent=session.sc;$("qn").textContent=session.q;$("st").textContent=session.st;
+}
+$("qf").onsubmit=e=>{
+  e.preventDefault();
+  if(answered){next();return}
+  let a=$("ans").value.trim().toLowerCase();if(!a)return;
+  const good=a===cur.r||ALT[a]===cur.r||(cur.k==="を"&&a==="o");
+  if(navigator.vibrate)navigator.vibrate(good?20:[40,40,40]);
+  const p=prog[cur.k]=get(cur.k);
+  session.q++;answered=true;
+  if(good){
+    p.ok++;p.streak++;session.sc++;session.st++;
+    $("fb").textContent="Correct ! "+cur.k+" = "+cur.r;$("fb").className="fb ok";
+  }else{
+    p.ko++;p.streak=0;p.m=false;session.st=0;
+    $("fb").textContent="Raté : "+cur.k+" se lit « "+cur.r+" »";$("fb").className="fb ko";
+    $("kana").classList.remove("shake");void $("kana").offsetWidth;$("kana").classList.add("shake");
+  }
+  $("ans").disabled=true;$("go").textContent="Suivant";$("go").focus();
+  $("sc").textContent=session.sc;$("qn").textContent=session.q;$("st").textContent=session.st;
+  save();render();
+};
+
+$("scope").value=String(curPart);
+render();next();
+
+/* --- Mode appli : icône, manifeste, installation, hors ligne --- */
+$("ans").addEventListener("focus",()=>$("nav").classList.add("hide"));
+$("ans").addEventListener("blur",()=>$("nav").classList.remove("hide"));
+try{
+  const c=document.createElement("canvas");c.width=c.height=512;const x=c.getContext("2d");
+  x.fillStyle="#c8344a";x.fillRect(0,0,512,512);x.fillStyle="#fff";
+  x.font='300px "Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif';x.textAlign="center";x.textBaseline="middle";x.fillText("あ",256,276);
+  const u=c.toDataURL("image/png");
+  const l1=document.createElement("link");l1.rel="apple-touch-icon";l1.href=u;document.head.append(l1);
+  const l2=document.createElement("link");l2.rel="icon";l2.href=u;document.head.append(l2);
+  const m={name:"Hiragana",short_name:"Hiragana",start_url:location.href.split("#")[0],display:"standalone",background_color:"#fbf8f6",theme_color:"#c8344a",lang:"fr",icons:[{src:u,sizes:"512x512",type:"image/png",purpose:"any"}]};
+  const l3=document.createElement("link");l3.rel="manifest";l3.href=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:"application/manifest+json"}));document.head.append(l3);
+}catch(e){}
+let dp=null;
+addEventListener("beforeinstallprompt",e=>{e.preventDefault();dp=e;$("inst").hidden=false});
+addEventListener("appinstalled",()=>{$("inst").hidden=true});
+$("inst").onclick=async()=>{if(dp){dp.prompt();dp=null;$("inst").hidden=true}};
+if("serviceWorker" in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script>
+</body>
+</html>
